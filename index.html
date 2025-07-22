@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Crypto Volatility Race</title>
+  <title>Crypto Volatility Race (1분 기준)</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <style>
     html, body {
@@ -64,7 +64,7 @@
       const utcDate = String(now.getUTCDate()).padStart(2, '0');
       const utcHour = String(now.getUTCHours()).padStart(2, '0');
       const utcMin = String(now.getUTCMinutes()).padStart(2, '0');
-      const timeStr = ${utcYear}-${utcMonth}-${utcDate} ${utcHour}:${utcMin} UTC;
+      const timeStr = `${utcYear}-${utcMonth}-${utcDate} ${utcHour}:${utcMin} UTC`;
       document.getElementById("time").childNodes[0].textContent = timeStr;
     }
 
@@ -74,7 +74,7 @@
         if (secondsToNextUpdate <= 0) {
           secondsToNextUpdate = 60;
         }
-        document.getElementById("countdown").textContent = 다음 갱신까지 ${secondsToNextUpdate}s;
+        document.getElementById("countdown").textContent = `다음 갱신까지 ${secondsToNextUpdate}s`;
       }, 1000);
     }
 
@@ -89,7 +89,7 @@
 
     async function updateChart() {
       updateTimeLabel();
-      secondsToNextUpdate = 60; // 카운트다운 리셋
+      secondsToNextUpdate = 60; // 리셋
 
       const data = await fetchData();
       const maxVol = d3.max(data, d => d.volatility);
@@ -100,7 +100,7 @@
 
       const groupEnter = group.enter()
         .append("g")
-        .attr("transform", (d, i) => translate(50, ${i * (barHeight + barGap)}));
+        .attr("transform", (d, i) => `translate(50, ${i * (barHeight + barGap)})`);
 
       groupEnter.append("text")
         .attr("class", "rank-change")
@@ -140,7 +140,7 @@
       const merged = groupEnter.merge(group);
 
       merged.transition().duration(1000)
-        .attr("transform", (d, i) => translate(50, ${i * (barHeight + barGap)}));
+        .attr("transform", (d, i) => `translate(50, ${i * (barHeight + barGap)})`);
 
       merged.each(function(d, i) {
         const g = d3.select(this);
@@ -165,11 +165,11 @@
             const start = prev ? prev.volatility : 0;
             const i = d3.interpolateNumber(start, d.volatility);
             return function(t) {
-              this.textContent = ${i(t).toFixed(2)}%;
+              this.textContent = `${i(t).toFixed(2)}%`;
             };
           })
-            .attr("x", 200 + safeWidth + 10)  // ✅ 바깥으로 고정 위치
-            .attr("text-anchor", "start");    // ✅ 왼쪽 기준 정렬
+          .attr("x", 200 + safeWidth + 10)     // 바깥쪽으로 고정
+          .attr("text-anchor", "start");       // 왼쪽 정렬
 
         const prev = previousDataMap.get(d.symbol);
         const rankText = g.select("text.rank-change");
@@ -183,7 +183,7 @@
           } else {
             const arrow = diff > 0 ? "▲" : "▼";
             const color = diff > 0 ? "#00ff88" : "#ff3366";
-            rankText.text(${arrow}${Math.abs(diff)}).attr("fill", color);
+            rankText.text(`${arrow}${Math.abs(diff)}`).attr("fill", color);
           }
         }
 
@@ -200,7 +200,8 @@
 
     updateChart();
     setInterval(updateChart, 60 * 1000);
-    startCountdown(); // 타이머 시작
+    startCountdown();
   </script>
 </body>
 </html>
+
